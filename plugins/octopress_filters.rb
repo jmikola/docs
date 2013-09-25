@@ -8,8 +8,15 @@ require 'rubypants'
 module OctopressFilters
   include BacktickCodeBlock
   include TemplateWrapper
-  def pre_filter(input, ext)
-    input = render_code_block(input, ext)
+  def pre_filter(input)
+    input.gsub /(<figure.+?>.+?<\/figure>)/m do
+      safe_wrap($1)
+    end
+    input = render_code_block(input)
+  end
+  def post_filter(input)
+    input = unwrap(input)
+    RubyPants.new(input).to_html
   end
 end
 
@@ -18,7 +25,12 @@ module Jekyll
     include OctopressFilters
     def pre_render(post)
       if post.ext.match('html|textile|markdown|haml|slim|xml')
-        post.content = pre_filter(post.content, post.ext)
+        post.content = pre_filter(post.content)
+      end
+    end
+    def post_render(post)
+      if post.ext.match('html|textile|markdown|haml|slim|xml')
+        post.content = post_filter(post.content)
       end
     end
   end
@@ -114,7 +126,7 @@ module OctopressLiquidFilters
 
   # Returns a title cased string based on John Gruber's title case http://daringfireball.net/2008/08/title_case_update
   def titlecase(input)
-    input.titlecase unless input.nil?
+    input.titlecase
   end
 
 end

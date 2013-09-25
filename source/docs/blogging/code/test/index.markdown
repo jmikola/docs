@@ -5,9 +5,6 @@ footer: false
 sidebar: false
 ---
 
-    So guys
-    whats up
-
 {% include_code test.js range:5-10 %}
 
 ``` html
@@ -33,7 +30,7 @@ sidebar: false
 </body></html>
 ```
 
-{% gist 2219214 lang:rb mark:6-8 %}
+{% gist 996818 %}
 
 {% codeblock Testing PHP (syntax_test.php) lang:php %}
 <?php
